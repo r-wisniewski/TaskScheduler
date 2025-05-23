@@ -16,10 +16,10 @@ def run_executor():
             for row in rows: #row is a tuple
                 # check the time and compare it to when the task should run
                 now = datetime.now()
-                if row[1] == "date":
+                if row[2] == "date":
                     # Execute the command if the date is less than or equal to now
                     if datetime.fromisoformat(row[2]) <= now:
-                        command = row[0]
+                        command = row[1]
                         try:
                             os.system(command)
                             #remove task from DB
@@ -28,11 +28,11 @@ def run_executor():
                             connection.commit()
                         except Exception as e:
                             print(f"Error executing command {command}: {e}")
-                elif row[1] == "interval":
+                elif row[2] == "interval":
                     # Execute the command if the the command has not been run in the last interval seconds 
                     # if never run, then run
-                    if row[4] is None:
-                        command = row[0]
+                    if row[5] is None:
+                        command = row[1]
                         try:
                             os.system(command)
                             #set last run to now
@@ -43,10 +43,10 @@ def run_executor():
                             print(f"Error executing command {command}: {e}")
                     #check how long its been since the last run
                     else:
-                        td = now - datetime.fromisoformat(row[4])
+                        td = now - datetime.fromisoformat(row[5])
                         total_seconds_since_last_run = int(td.total_seconds())
-                        if row[3] <= total_seconds_since_last_run:
-                            command = row[0]
+                        if row[4] <= total_seconds_since_last_run:
+                            command = row[1]
                             try:
                                 os.system(command)
                                 #set last run to now
@@ -55,14 +55,14 @@ def run_executor():
                                 connection.commit()
                             except Exception as e:
                                 print(f"Error executing command {command}: {e}")
-                elif row[1] == "cron":
+                elif row[2] == "cron":
                     #run daily at the minute, hour, second passed
                     # Extract hour, minute, and second
                     current_hour = now.hour
                     current_minute = now.minute
                     current_second = now.second
-                    if (current_hour == row[5] and current_minute == row[6] and current_second == row[7]):
-                        command = row[0]
+                    if (current_hour == row[6] and current_minute == row[7] and current_second == row[8]):
+                        command = row[1]
                         try:
                             os.system(command)
                             #set last run to now
@@ -72,5 +72,5 @@ def run_executor():
                         except Exception as e:
                             print(f"Error executing command {command}: {e}")
                 else:
-                    print(f"Invalid trigger type: {row[1]}")
+                    print(f"Invalid trigger type: {row[2]}")
                     continue

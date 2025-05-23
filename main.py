@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, Form
+from fastapi import FastAPI, Request, Form, Path
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 import logging, scheduler, uvicorn, executor
@@ -17,6 +17,11 @@ def root(request: Request):
     tasks = scheduler.get_scheduled_tasks()  # Get the scheduled tasks from the scheduler
     return templates.TemplateResponse("index.html", 
                                       {"request": request, "task_table": tasks}) # render index.html
+
+@app.post("/delete/{task_id}")
+async def delete_task(task_id: int = Path(...)):
+    scheduler.delete_task(task_id)
+    return RedirectResponse("/", status_code=303)
 
 @app.post("/schedule")
 async def schedule(
@@ -94,6 +99,7 @@ if __name__ == "__main__":
         #check if the task table exists. If not, create it
         create_table_query = '''
             CREATE TABLE IF NOT EXISTS task_table (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
                 command TEXT,
                 trigger_type TEXT,
                 run_date TEXT,

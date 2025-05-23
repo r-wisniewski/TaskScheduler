@@ -13,16 +13,19 @@
       <table class="min-w-full text-sm text-left text-gray-600">
         <thead class="bg-gray-200 text-gray-700">
           <tr>
+            <th class="px-4 py-2">ID</th>
             <th class="px-4 py-2">Type</th>
             <th class="px-4 py-2">Command</th>
             <th class="px-4 py-2">Run Date</th>
             <th class="px-4 py-2">Interval (s)</th>
             <th class="px-4 py-2">Cron (HH:MM:SS)</th>
+            <th class="px-4 py-2">Actions</th>
           </tr>
         </thead>
         <tbody>
           {% for task in task_table %}
           <tr class="bg-white border-b hover:bg-gray-100">
+            <td class="px-4 py-2">{{ task.id }}</td>
             <td class="px-4 py-2">{{ task.trigger_type }}</td>
             <td class="px-4 py-2">{{ task.command }}</td>
             <td class="px-4 py-2">{{ task.run_date or '-' }}</td>
@@ -33,6 +36,11 @@
               {% else %}
                 -
               {% endif %}
+            </td>
+            <td>
+              <form method="post" action="/delete/{{ task.id }}" style="display:inline;">
+                <button type="submit" class="text-red-600 hover:underline">Delete</button>
+              </form>
             </td>
           </tr>
           {% endfor %}
