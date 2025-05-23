@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Schedule Task</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+  <!-- Scheduled Tasks Table -->
+  <div class="mt-10">
+    <h2 class="text-xl font-semibold text-gray-800 mb-4 text-center">📋 Scheduled Tasks</h2>
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-sm text-left text-gray-600">
+        <thead class="bg-gray-200 text-gray-700">
+          <tr>
+            <th class="px-4 py-2">Type</th>
+            <th class="px-4 py-2">Command</th>
+            <th class="px-4 py-2">Run Date</th>
+            <th class="px-4 py-2">Interval (s)</th>
+            <th class="px-4 py-2">Cron (HH:MM:SS)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for task in task_table %}
+          <tr class="bg-white border-b hover:bg-gray-100">
+            <td class="px-4 py-2">{{ task.trigger_type }}</td>
+            <td class="px-4 py-2">{{ task.command }}</td>
+            <td class="px-4 py-2">{{ task.run_date or '-' }}</td>
+            <td class="px-4 py-2">{{ task.interval_seconds or '-' }}</td>
+            <td class="px-4 py-2">
+              {% if task.cron_hour is not none %}
+                {{ task.cron_hour }}:{{ task.cron_minute }}:{{ task.cron_second }}
+              {% else %}
+                -
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+    <div class="bg-white shadow-xl rounded-2xl p-8 w-full max-w-2xl mx-auto mt-8">
+  {% if error_msg %}
+    <div class="mb-4 px-4 py-3 rounded-lg bg-red-100 border border-red-400 text-red-700 text-center font-semibold shadow">
+      {{ error_msg }}
+    </div>
+  {% endif %}
+    
+  <body class="bg-gray-100 min-h-screen flex items-center justify-center">
+  <div class="bg-white shadow-xl rounded-2xl p-8 w-full max-w-2xl">
+    <h1 class="text-2xl font-bold mb-6 text-center text-gray-800">🕓 Schedule a Task</h1>
+    
+    <form method="post" action="/schedule" class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+      
+      <!-- Trigger Type -->
+      <div class="col-span-full">
+        <label class="block text-sm font-medium text-gray-700">Trigger Type</label>
+        <select name="trigger_type" class="mt-1 w-full border border-gray-300 rounded-md px-4 py-2">
+          <option value="date">Date</option>
+          <option value="interval">Interval</option>
+          <option value="cron">Cron</option>
+        </select>
+      </div>
+
+      <!-- Run Date -->
+      <div class="col-span-full">
+        <label class="block text-sm font-medium text-gray-700">Date (ISO format)</label>
+        <input type="text" name="run_date" placeholder="e.g. 2025-05-12T14:30:00"
+               class="mt-1 w-full border border-gray-300 rounded-md px-4 py-2" />
+      </div>
+
+      <!-- Interval Seconds -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Interval Seconds</label>
+        <input type="number" name="interval_seconds" placeholder="e.g. 60"
+               class="mt-1 w-full border border-gray-300 rounded-md px-4 py-2" />
+      </div>
+
+      <!-- Cron Fields -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Cron - Hour</label>
+        <input type="number" name="cron_hour" placeholder="0-23"
+               class="mt-1 w-full border border-gray-300 rounded-md px-4 py-2" />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Cron - Minute</label>
+        <input type="number" name="cron_minute" placeholder="0-59"
+               class="mt-1 w-full border border-gray-300 rounded-md px-4 py-2" />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Cron - Second</label>
+        <input type="number" name="cron_second" placeholder="0-59"
+               class="mt-1 w-full border border-gray-300 rounded-md px-4 py-2" />
+      </div>
+
+      <!-- Command -->
+      <div class="col-span-full">
+        <label class="block text-sm font-medium text-gray-700">Command</label>
+        <input type="text" name="command" placeholder="Enter command or task name"
+               class="mt-1 w-full border border-gray-300 rounded-md px-4 py-2" />
+      </div>
+
+      <!-- Submit -->
+      <div class="col-span-full">
+        <button type="submit"
+                class="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 transition shadow">
+          ➕ Schedule Task
+        </button>
+      </div>
+    </form>
+  </div>
+</body>
+</html>
