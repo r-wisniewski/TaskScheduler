@@ -4,6 +4,8 @@ A web-based task scheduler built with **FastAPI** and **Jinja2** that allows you
 
 ## Features
 
+![alt text](https://github.com/r-wisniewski/TaskScheduler/blob/master/Screenshot%20from%202025-05-25%2017-41-53.png)
+
 - **Web UI**: Schedule tasks using a simple web interface.
 - **Trigger Types**: Supports one-time (date), interval, and cron-style scheduling.
 - **Task Management**: View all scheduled tasks and delete them as needed.
